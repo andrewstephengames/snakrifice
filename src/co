@@ -2,7 +2,7 @@
 e=$(echo $1 | cut -d '.' -f1)
 CC=g++
 #LIBS="-lraylib -lGL -lpthread -ldl"
-LIBS="-lraylib"
+LIBS="-lraylib -lm"
 CFLAGS="-w -std=c++20"
 DEBUG="-ggdb"
 [[ ! -d ../build ]] && mkdir ../build && clear && $CC $CFLAGS $1 -o ../build/$e $LIBS $DEBUG && ../build/$e
