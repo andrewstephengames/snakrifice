@@ -2,6 +2,7 @@
 #define SNAKE_H_
 
 #include <ctime>
+#include <cmath>
 #include <vector>
 #include "menu.h"
 
@@ -12,6 +13,7 @@ typedef enum {
      Button1,
      Button2,
      Score,
+     Interaction,
 } ui_element;
 
 class Fruit {
@@ -72,25 +74,31 @@ class Snake {
           size_t length;
           Color color;
      public:
+          float last_collect;
+          float distance;
           Snake (char *file_name, float speed, Color color) {
                texture = LoadTexture (file_name);
                this->speed = speed;
-               length = 0;
                this->color = color;
-          }
-          Texture2D get_texture () {
-               return texture;
+               length = 0;
+               last_collect = 0.0f;
           }
           ~Snake() {
                if (texture.id > 0) {
                     UnloadTexture(texture);
                }
           }
-          void set_rect (Rectangle rect) {
-               this->rect = rect;
+          Texture2D get_texture () {
+               return texture;
+          }
+          void set_texture (Texture2D texture) {
+               this->texture = texture;
           }
           Rectangle get_rect () {
                return rect;
+          }
+          void set_rect (Rectangle rect) {
+               this->rect = rect;
           }
           float get_speed () {
                return speed;
@@ -285,9 +293,16 @@ void Snake::handle_keys (Vector2 canvas) {
      }
 }
 
+float dist_v (Vector2 a, Vector2 b) {
+     return sqrt(pow(b.x-a.x, 2) + pow (b.y-a.y, 2));
+}
+
 void Game::handle_collision (Snake *snake, Fruit *fruit, Vector2 canvas) {
      if (CheckCollisionCircleRec (fruit->get_center(), fruit->get_radius(), snake->get_rect())) {
-          Game::set_score(Game::get_score()+1);
+          Game::set_score(Game::get_score()+1+snake->distance/10);
+          if (snake->distance > canvas.x/20) {
+               draw_label (&Game::e.at(Interaction), false, true, canvas);
+          }
           snake->set_length(snake->get_length()+1);
           fruit->generate(canvas);
      }
@@ -378,6 +393,7 @@ void Game::state_machine (Snake *snake, Fruit *fruit) {
                snake->set_length(0);
                snake->generate(w);
                snake->reset_keys();
+               snake->distance = 0.0f;
                fruit->generate(w);
           } break;
           case Start: {
@@ -392,6 +408,8 @@ void Game::state_machine (Snake *snake, Fruit *fruit) {
                snake->draw_head();
                snake->handle_keys(w);
                fruit->draw(w);
+               Vector2 head = rec_to_v(snake->get_rect());
+               snake->distance = dist_v (head, fruit->get_center());
                snake->draw_tail(canvas);
                Game::handle_collision (snake, fruit, w);
                if (IsKeyPressed (KEY_R)) {

@@ -80,6 +80,20 @@ int main () {
           .texture = {0},
      };
      game->e.push_back (score);
+     Element interaction = {
+          .box = {
+               .x = canvas.x,
+               .y = canvas.y,
+               .width = 100,
+               .height = 100,
+          },
+          .font_size = canvas.x/20,
+          .bg = WHITE,
+          .fg = BLUE,
+          .texture = {0},
+     };
+     strcpy (interaction.label, "Nice!");
+     game->e.push_back(interaction);
 
      Snake *snake = new Snake (NULL, 0.5f, DARKGREEN);
      Fruit *fruit = new Fruit (NULL, RED);
