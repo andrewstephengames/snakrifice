@@ -30,10 +30,10 @@ int main () {
           },
           .font_size = canvas.x/15,
           .bg = WHITE,
-          .fg = BLACK,
+          .fg = RED,
           .texture = {0},
      };
-     strcpy (title.label, "Snake");
+     strcpy (title.label, "Snakrifice");
      game->e.push_back (title);
      canvas.y = w.y;
      Element button1 = {
@@ -76,7 +76,7 @@ int main () {
           .bg = {
                .r = 255, .g = 255, .b = 255, .a = 0,
           },
-          .fg = BLACK,
+          .fg = RED,
           .texture = {0},
      };
      game->e.push_back (score);
